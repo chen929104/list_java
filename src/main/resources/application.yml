@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+    datasource:
+        name: list
+        url: jdbc:mysql://127.0.0.1:3306/list?serverTimezone=UTC&characterEncoding=utf-8&allowMultiQueries=true
+        username: root
+        password: chen15967752845
+        
+        
+        driver-class-name:  com.mysql.cj.jdbc.Driver
+        filters: stat
+        maxActive: 20
+        initialSize: 1
+        maxWait: 60000
+        minIdle: 1
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: select 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
+
+mybatis:
+  mapper-locations: classpath*:mapping/*.xml  
+  type-aliases-package: com.chen.dao 
+
+
+pagehelper:
+    helperDialect: mysql
+    reasonable: true
+    supportMethodsArguments: true
+    params: count=countSql

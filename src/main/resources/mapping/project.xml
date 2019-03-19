@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chen.mapping.projectmapping">
+ 
+    <resultMap id="project" type="com.chen.dao.project">
+        <id column="projectid" property="projectid" jdbcType="INTEGER"/>
+        <result column="title" property="title" jdbcType="CHAR"/>
+        <result column="context" property="context" jdbcType="CHAR"/>
+        <result column="image" property="image" jdbcType="CHAR"/>
+        <result column="date" property="date" jdbcType="BIGINT"/>
+        <result column="userid" property="userid" jdbcType="INTEGER"/> 
+    </resultMap>
+ 
+    <sql id="base_column">
+      title,userid,date,image,context
+    </sql>
+    <insert id="insert" parameterType="project" >
+        INSERT INTO
+        project(<include refid="base_column"/>)
+        VALUE
+        (#{title},#{userid},#{date},#{image},#{context})
+    </insert>
+ 
+    <update id="updata" parameterType="project">
+        UPDATE project
+        <set>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="userid != null">
+                userid = #{userid},
+            </if>
+            <if test="image !=null ">
+                image = #{image},
+            </if>
+            <if test="context !=null ">
+                context = #{context},
+            </if>
+        </set>
+        WHERE projectid = #{projectid}
+    </update>
+ 
+    <select id="select" parameterType="INTEGER" resultMap="project">
+        SELECT projectid,<include refid="base_column"></include> FROM project
+        WHERE projectid = #{projectid}
+    </select>
+    
+    <select id="getTotal" parameterType="INTEGER"  resultType="INTEGER">
+        SELECT  count(1) as total FROM project
+         WHERE userid = #{userid}
+    </select>
+ 
+    <select id="selectall"  resultType="project">
+        SELECT projectid,<include refid="base_column"></include> FROM project WHERE userid = #{userid}  ORDER BY date desc LIMIT #{page} , #{rows}
+    </select>
+  
+  	<delete id="delete"  parameterType="INTEGER">
+        delete from project where projectid in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">   
+            #{item}   
+         </foreach>
+
+    </delete>
+    
+</mapper>

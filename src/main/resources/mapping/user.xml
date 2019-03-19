@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chen.mapping.usermapping">
+ 
+    <resultMap id="userdao" type="com.chen.dao.userdao">
+        <id column="userid" property="userid" jdbcType="INTEGER"/>
+        <result column="appid" property="appid" jdbcType="CHAR"/>
+        <result column="name" property="name" jdbcType="CHAR"/>
+        <result column="heardimg" property="heardimg" jdbcType="CHAR"/>        
+    </resultMap>
+ 
+    <sql id="base_column">
+      appid,name,heardimg
+    </sql>
+    <insert id="insertuser" parameterType="userdao" >
+        INSERT INTO
+        user(<include refid="base_column"/>)
+        VALUE
+        (#{appid},#{name},#{heardimg})
+    </insert>
+ 
+    <update id="updata" parameterType="userdao">
+        UPDATE user
+        <set>
+            <if test="appid != null">
+                appid = #{appid},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="heardimg!=null">
+                heardimg = #{heardimg},
+            </if>
+        </set>
+        WHERE userid = #{userid}
+    </update>
+ 
+    <select id="select" parameterType="String" resultMap="userdao">
+        SELECT userid,<include refid="base_column"></include> FROM user
+        WHERE appid = #{appid}
+    </select>
+    
+     <select id="selectbyid" parameterType="INTEGER" resultMap="userdao">
+        SELECT userid,<include refid="base_column"></include> FROM user
+        WHERE userid = #{userid}
+    </select>
+    
+    <delete id="delete"  parameterType="INTEGER">
+        delete from user where userid=#{userid}
+    </delete>
+    
+    
+    
+</mapper>

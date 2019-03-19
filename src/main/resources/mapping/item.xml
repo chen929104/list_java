@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chen.mapping.itemmapping">
+ 
+    <resultMap id="item" type="com.chen.dao.item">
+        <id column="itemid" property="itemid" jdbcType="INTEGER"/>
+        <result column="projectid" property="projectid" jdbcType="CHAR"/>
+        <result column="context" property="context" jdbcType="CHAR"/>
+        <result column="date" property="date" jdbcType="BIGINT"/>
+        <result column="state" property="state" jdbcType="INTEGER"/> 
+    </resultMap>
+ 
+    <sql id="base_column">
+      projectid,context,date,state
+    </sql>
+    <insert id="insert" parameterType="item" >
+        INSERT INTO
+        item(<include refid="base_column"/>)
+        VALUE
+        (#{projectid},#{context},#{date},#{state})
+    </insert>
+ 
+    <update id="updata" parameterType="item">
+        UPDATE item
+        <set>
+            <if test="projectid != null">
+                projectid = #{projectid},
+            </if>
+            <if test="context != null">
+                context = #{context},
+            </if>
+   
+            <if test="state !=null ">
+                state = #{state},
+            </if>
+        </set>
+        WHERE itemid = #{itemid}
+    </update>
+ 
+ 	<update id="finish" parameterType="java.util.List">
+ 	 <foreach collection="list" index="index" item="item1" open="" close="" separator=";">   
+        UPDATE item
+        <set>
+            
+                state = #{item1.state,jdbcType = INTEGER }
+            
+        </set>
+        WHERE itemid = #{item1.itemid,jdbcType = INTEGER}
+         </foreach>
+    </update>
+    
+    <select id="select" parameterType="INTEGER" resultMap="item">
+        SELECT itemid,<include refid="base_column"></include> FROM item
+        WHERE itemid = #{itemid}
+    </select>
+    
+    <select id="getTotal" parameterType="INTEGER"  resultType="INTEGER">
+        SELECT  count(1) as total FROM item
+         WHERE projectid = #{projectid}
+    </select>
+ 
+    <select id="selectall"  resultType="item">
+        SELECT itemid,context,projectid,date ,state FROM item WHERE projectid = #{projectid}  ORDER BY date ASC LIMIT #{page} , #{rows}
+    </select>
+  
+  	<delete id="delete"  parameterType="INTEGER">
+        delete from item where itemid in
+        <foreach collection="list" index="index" item="item1" open="(" separator="," close=")">   
+            #{item1}   
+         </foreach>
+
+    </delete>
+    <delete id="deleteitem"  parameterType="INTEGER">
+        delete from item where projectid in
+        <foreach collection="list" index="index" item="item1" open="(" separator="," close=")">   
+            #{item1}   
+         </foreach>
+    </delete>
+</mapper>
